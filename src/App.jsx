@@ -4,12 +4,17 @@ import "./App.css";
 
 function App() {
   var sno = 0;
-  const [count, setCount] = useState(0);
+  var [count, setCount] = useState(0);
   const [ApiData, setApiData] = useState([{
     BuyPrice:'123123',CoinName:'123123',LastPrice:'123123',SellPrice:'123123',Volume:'123123',base_uint:'123123'
   }]);
+  
+  var refresh =  ()=>{
+      setCount(count++);
+  }
   useEffect( () => {
     async function getUserData() {
+      await fetch(`http://localhost:3001/v2/getapidata`);
       const CryptoApi = await fetch(`http://localhost:3001/v2/apidata`);
       console.log('CryptoApi',CryptoApi)
       if (!CryptoApi.ok) {
@@ -21,22 +26,22 @@ function App() {
       // console.log(CryptoApiData);
       const Data  = CryptoApiData;
       await setApiData(Data);
-      console.log(ApiData[0]);
+      console.log("Updates Successfully");
     }
     getUserData();
     // const {buy} = ApiData;
     // console.log( buy +" hello")
     return;
-  },[]);
+  },[count]);
 
   return (
     <>
     {/*Heading */}
-    <div className="flex gap-4 items-center  w-[100vw] text-center">
-    <div className="p-2 text-[#3dc6c1] font-semibold text-3xl  ">
+    <div className="flex items-center  text-center justify-evenly flex-wrap">
+    <div className=" text-[#3dc6c1] font-semibold text-3xl  ">
     HODLINFO.com
     <br/>
-    <span className="text-left text-[#999999] text-sm">Powered By <span className="text-[#3dc6c1]">Finstreet</span></span>
+    <span className="text-center text-[#999999] text-sm">Powered By <span className="text-[#3dc6c1]">Finstreet</span></span>
     </div>
     
     
@@ -49,8 +54,7 @@ function App() {
 
     {/*Timer connect */}
     <div className="flex gap-2 items-center flex-wrap">
-    <div className="Counter"> 60 </div>
-    
+    <button className="Counter bg-slate-500 p-2 rounded-md hover:bg-slate-800" onClick={refresh}> Double Click to Refresh </button>
     <button className="flex items-center bg-[#3dc6c1]">
     {" "}
             <img
@@ -65,21 +69,9 @@ function App() {
             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>
-      </div>
-
-      {/*Stats */}
-      <div>
-      <div className="pt-8"> Best Price to Trade </div>
-        <div className="flex gap-2 justify-center">
-        <div>
-        <div className="text-[#2d9894] text-lg">0.41%</div>
-        <p className="text-xs ">5 Mins</p>
-        </div>
-            </div>
-      </div>
-      
+      </div>      
       {/*Table of content*/}
-      <table className="w-full text-center ">
+      <table className="w-full text-center  ">
       <thead>
       <tr>
       <th>
@@ -105,6 +97,9 @@ function App() {
                 <tbody>
                 {ApiData.map(({BuyPrice,CoinName,LastPrice,SellPrice,Volume,base_uint})=>{
                   sno ++;
+                  if(sno>10){
+                    return (<span></span>);
+                  }
                   return (
                     <tr className="font-bold">
                     <td className="align-middle "><h4 >{sno}</h4></td>

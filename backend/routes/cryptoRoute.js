@@ -5,6 +5,7 @@ import cryptoSchema from "../models/cryptoSchema.js";
 const router = express.Router();
 
 router.get("/getapidata", async (req, res) => {
+  await cryptoSchema.deleteMany({});
   fetch("https://api.wazirx.com/api/v2/tickers")
     .then((res) => res.json())
     .then((json) => {
